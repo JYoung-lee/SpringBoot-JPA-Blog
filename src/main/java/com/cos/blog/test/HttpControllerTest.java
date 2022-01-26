@@ -14,6 +14,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HttpControllerTest {
 	
+	private static final String  TAG = "HttpController"; 
+	
+	@GetMapping("/http/lombok")
+	public String lombokTest() {
+		//생성자를 만들었을경우 Builder이 있을경우 순서상관없이. 매개변수 숫자상관없이 사용하고 싶은 변수만 셋팅하고 build 해주면 사용가능하다
+		Member m = Member.builder().username("ssar").password("1234").email("ssar@nate.com").build();  
+		System.out.println(TAG + "getter : "+ m.getUsername());
+		m.setUsername("junyong");
+		System.out.println(TAG + "setter : "+ m.getUsername());
+		return "lombok test 완료";
+	}
 	// 인터넷 브라우저 요청은 get 요청만 할수있다.
 	// http://localhost:8080/http/get (SELECT)
 	@GetMapping("/http/get")
@@ -27,6 +38,7 @@ public class HttpControllerTest {
 		return "Post : " + m.getId() +", " + m.getUsername()+ ", " + m.getPassword() + "," + m.getEmail() ;
 		//return "Post : " + text;
 	}
+	
 	//http://localhost:8080/http/put (UPDATE)
 	@PutMapping("/http/put")
 	public String putTest(@RequestBody Member m) {
@@ -36,8 +48,8 @@ public class HttpControllerTest {
 
 	//http://localhost:8080/http/delete (DELETE)
 	@DeleteMapping("/http/delete")
-	public String deleteTest() {
-		return "delete 요청";
+	public String deleteTest(@RequestBody Member m) {
+		return "delete  : " + m.getId() +", " + m.getUsername()+ ", " + m.getPassword() + "," + m.getEmail() ;
 	}
 	
 }
