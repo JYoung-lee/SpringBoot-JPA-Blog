@@ -1,8 +1,13 @@
 package com.cos.blog.test;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,6 +24,21 @@ public class DummyControllerTest {
 	@Autowired // 의존성 주입 (DI) 
 	private UserRepository userRepository;
 	
+	@GetMapping("dummy/users")
+	public List<User> list(){
+		return userRepository.findAll();
+	}
+	
+	// 한페이지당 2건에 데이터를 리번탇아 볼 예정
+	@GetMapping("/dummy/user")						// size= 2 : 한페이지에 2개만 , sort ="id" 아이디로 sort한다, direction : 내림차순, 오름차순 정하기
+	public List<User> pageList(@PageableDefault(size = 2, sort = "id", direction = Sort.Direction.DESC) Pageable pageable){
+		Page<User> pageingUser = userRepository.findAll(pageable); // 요렇게만 하면 사용하지 않는 정보까지 불러온다.
+		
+		List<User> users = pageingUser.getContent(); // 요렇게 하면 Content(내용)만 가져와서 사용할 수 있다.
+		
+		return users;
+	}
+	
 	// {id} 주소로 파마미터를 전달 받을 수 있음
 	//http://localhost:8000/blog/dummy/user/3
 	@GetMapping("/dummy/user/{id}")
@@ -30,7 +50,7 @@ public class DummyControllerTest {
 		/* ex 1) null 아닌 경우 findById를 실행 , null일경우 orElseGet > get() 실행해서 빈객체 리턴해서 null이 아닌 빈 객체가 되도록 실행한다.
 		User user = userRepository.findById(id).orElseGet(new Supplier<User>() {
 			@Override
-			public User get() {
+			public User get() { 
 				// TODO Auto-generated method stub
 				return new User();
 			}
