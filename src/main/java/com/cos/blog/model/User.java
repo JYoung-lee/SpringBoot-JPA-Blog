@@ -33,7 +33,7 @@ public class User {
 	//yml > JPA 셋팅 상 use-new-id-generator-mappings JPA에서 사용하는 넘버링 전략을 따라가지 않는다 . ture는 따라간다.
 	private int id; // (Oracle) 시퀀스, (MySQL) auto..increment
 	
-	@Column(nullable = false, length = 30)  // nullable = Notnull, length = 길이
+	@Column(nullable = false, length = 30)  // nullable = false (Notnull), length = 길이
 	private String username; // 아이디
 	
 	@Column(nullable = false, length = 100) // 123456 => 해쉬 (비밀번호 암호화)
